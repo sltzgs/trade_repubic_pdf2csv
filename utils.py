@@ -43,16 +43,20 @@ def find_last_line(doc_in_lines):
 
 def extract_doc_info(doc_in_lines):
 
-    df = pd.DataFrame(columns=[i for i in doc_in_lines[23:28]])
     user_name, user_address = find_user_info(doc_in_lines)
     iban = find_iban(doc_in_lines)
     saldo_init = str_to_float(doc_in_lines[18][:-2])
     last_line = find_last_line(doc_in_lines)
+    date_init = doc_in_lines[6].split('-')[0]
+
+    df = pd.DataFrame(columns=[i for i in doc_in_lines[23:28]])
+    df.loc[0] = [date_init, 'INITIAL SALDO', '-', '-', saldo_init]
 
     dct_info = {'df': df,
                 'user_name': user_name,
                 'user address': user_address,
                 'IBAN': iban,
+                'date_init': date_init,
                 'saldo_init': saldo_init,
                 'last_line': last_line}
 
@@ -72,7 +76,7 @@ def str_to_float(string):
     return float_
 
 def init_counters():
-    line_, page_current, i_entry, line_add = 28,0,0,0
+    line_, page_current, i_entry, line_add = 28,0,1,0
     return page_current, i_entry, line_add, line_
 
 def is_user_info(line, user_name):
